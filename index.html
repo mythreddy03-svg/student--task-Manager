@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Task Manager</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Student Task Manager</h1>
+
+        <div class="task-input">
+            <input type="text" id="taskInput" placeholder="Enter a task">
+            <button onclick="addTask()">Add</button>
+        </div>
+
+        <h2>My Tasks</h2>
+        <div class="stats">
+            <p>Pending: <span id="pendingCount">0</span></p>
+            <p>Completed: <span id="completedCount">0</span></p>
+        </div>
+
+        <ul id="taskList"></ul>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
