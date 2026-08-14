@@ -1,54 +1,87 @@
-function addTask() {
-   
-    let input = document.getElementById("taskInput");
-    let task = input.value;
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-    if (task === "") {
+function addTask() {
+
+    let input = document.getElementById("taskInput");
+    let taskText = input.value.trim();
+
+    if (taskText === "") {
         alert("Please enter a task");
         return;
     }
 
-    let li = document.createElement("li");
+    let task = {
+        text: taskText,
+        completed: false
+    };
 
-    li.innerHTML = `
-        <span onclick="completeTask(this)">${task}</span>
-        <button onclick="deleteTask(this)">Delete</button>
-    `;
+    tasks.push(task);
 
-    document.getElementById("taskList").appendChild(li);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
 
     input.value = "";
 
+    displayTasks();
+}
+
+
+function displayTasks() {
+
+    let taskList = document.getElementById("taskList");
+
+    taskList.innerHTML = "";
+
+    tasks.forEach(function(task, index) {
+
+        let li = document.createElement("li");
+
+        li.innerHTML = `
+            <span 
+                onclick="completeTask(${index})"
+                class="${task.completed ? 'completed' : ''}">
+                ${task.text}
+            </span>
+
+            <button onclick="deleteTask(${index})">
+                Delete
+            </button>
+        `;
+
+        taskList.appendChild(li);
+    });
+
     updateCounts();
 }
 
-function completeTask(task) {
 
-    task.style.textDecoration = "line-through";
-    task.style.color = "gray";
+function completeTask(index) {
 
-    updateCounts();
+    tasks[index].completed = !tasks[index].completed;
+
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+
+    displayTasks();
 }
 
-function deleteTask(button) {
 
-    button.parentElement.remove();
+function deleteTask(index) {
 
-    updateCounts();
+    tasks.splice(index, 1);
+
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+
+    displayTasks();
 }
+
 
 function updateCounts() {
-
-    let tasks = document.querySelectorAll("#taskList li");
 
     let pending = 0;
     let completed = 0;
 
     tasks.forEach(function(task) {
 
-        let text = task.querySelector("span");
-
-        if (text.style.textDecoration === "line-through") {
+        if (task.completed) {
             completed++;
         } else {
             pending++;
@@ -58,3 +91,6 @@ function updateCounts() {
     document.getElementById("pendingCount").textContent = pending;
     document.getElementById("completedCount").textContent = completed;
 }
+
+
+displayTasks();
